@@ -1,0 +1,156 @@
+image: node:lts
+options:
+  docker: true
+
+definitions:
+  services:
+    docker:
+      memory: 2048
+
+  steps:
+    - step: &build-and-install-step
+        name: 'Install dependencies and build'
+        size: 2x
+        caches:
+          - node
+        script:
+          - npm install
+          - npm run build
+    - step: &sonar-step
+        name: 'Run sonar check'
+        caches:
+          - sonar
+        script:
+          - pipe: sonarsource/sonarqube-scan:2.0.1
+            variables:
+              SONAR_HOST_URL: $SONAR_HOST_URL
+              SONAR_TOKEN: $SONAR_TOKEN
+              EXTRA_ARGS: '-Dsonar.sources=src'
+  caches:
+    sonar:
+      path: ~/.sonar
+
+clone:
+  depth: full
+
+pipelines:
+  branches:
+    develop:
+      - parallel:
+          - step: *build-and-install-step
+          - step: *sonar-step
+
+      - step:
+          name: 'Build and push image'
+          caches:
+            - docker
+          script:
+            - docker build --build-arg SSH_KEY="$SHARED_MODULE_SSH_KEY"  -t $DEV_ECR_REPOSITORY_NAME:latest .
+            - pipe: atlassian/aws-ecr-push-image:2.4.0
+              variables:
+                AWS_ACCESS_KEY_ID: $DEV_AWS_ACCESS_KEY
+                AWS_SECRET_ACCESS_KEY: $DEV_AWS_SECRET_KEY
+                AWS_DEFAULT_REGION: $AWS_REGION
+                IMAGE_NAME: $DEV_ECR_REPOSITORY_NAME
+                PROJECT_NAME: $PROJECT_NAME
+                TAGS: 'latest'
+      - step:
+          name: 'Update Service'
+          image: amazon/aws-cli:2.14.0
+          script:
+            - export AWS_ACCESS_KEY_ID=$DEV_AWS_ACCESS_KEY
+            - export AWS_SECRET_ACCESS_KEY=$DEV_AWS_SECRET_KEY
+            - export AWS_DEFAULT_REGION=$AWS_REGION
+            - export PROJECT_NAME=$PROJECT_NAME
+            - export ENVIRONMENT=dev
+            - aws ecs register-task-definition --family $ENVIRONMENT-$PROJECT_NAME-web --container-definitions "$(cat ecs-task-definitions/${ENVIRONMENT}TaskDefinition.json)" --execution-role-arn arn:aws:iam::$DEV_AWS_ACCOUNT_ID:role/$ENVIRONMENT-$PROJECT_NAME-ecs-execution-role --requires-compatibilities FARGATE --network-mode awsvpc --cpu 512 --memory 1024 --task-role-arn arn:aws:iam::$DEV_AWS_ACCOUNT_ID:role/$ENVIRONMENT-$PROJECT_NAME-ecs-task-role
+            - aws ecs update-service --service $ENVIRONMENT-$PROJECT_NAME-web-svc --cluster $ENVIRONMENT-$PROJECT_NAME-cluster --task-definition $ENVIRONMENT-$PROJECT_NAME-web --force-new-deployment
+            - aws ecs wait services-stable --service $ENVIRONMENT-$PROJECT_NAME-web-svc --cluster $ENVIRONMENT-$PROJECT_NAME-cluster
+            - aws cloudfront create-invalidation --distribution-id $DEV_CDN_ID --paths "/*"
+
+    staging:
+      - step:
+          name: 'Build and push image'
+          caches:
+            - docker
+          script:
+            - docker build --build-arg SSH_KEY="$SHARED_MODULE_SSH_KEY" -t $STAGING_ECR_REPOSITORY_NAME:latest .
+            - pipe: atlassian/aws-ecr-push-image:2.4.0
+              variables:
+                AWS_ACCESS_KEY_ID: $STAGING_AWS_ACCESS_KEY
+                AWS_SECRET_ACCESS_KEY: $STAGING_AWS_SECRET_KEY
+                AWS_DEFAULT_REGION: $AWS_REGION
+                IMAGE_NAME: $STAGING_ECR_REPOSITORY_NAME
+                PROJECT_NAME: $PROJECT_NAME
+                TAGS: 'latest'
+      - step:
+          name: 'Update Service'
+          image: amazon/aws-cli:2.14.0
+          script:
+            - export AWS_ACCESS_KEY_ID=$STAGING_AWS_ACCESS_KEY
+            - export AWS_SECRET_ACCESS_KEY=$STAGING_AWS_SECRET_KEY
+            - export AWS_DEFAULT_REGION=$AWS_REGION
+            - export PROJECT_NAME=$PROJECT_NAME
+            - export ENVIRONMENT=staging
+            - aws ecs register-task-definition --family $ENVIRONMENT-$PROJECT_NAME-web --container-definitions "$(cat ecs-task-definitions/${ENVIRONMENT}TaskDefinition.json)" --execution-role-arn arn:aws:iam::$STAGING_AWS_ACCOUNT_ID:role/$ENVIRONMENT-$PROJECT_NAME-ecs-execution-role --requires-compatibilities FARGATE --network-mode awsvpc --cpu 1024 --memory 2048 --task-role-arn arn:aws:iam::$STAGING_AWS_ACCOUNT_ID:role/$ENVIRONMENT-$PROJECT_NAME-ecs-task-role
+            - aws ecs update-service --service $ENVIRONMENT-$PROJECT_NAME-web-svc --cluster $ENVIRONMENT-$PROJECT_NAME-cluster --task-definition $ENVIRONMENT-$PROJECT_NAME-web --force-new-deployment
+            - aws ecs wait services-stable --service $ENVIRONMENT-$PROJECT_NAME-web-svc --cluster $ENVIRONMENT-$PROJECT_NAME-cluster
+            - aws cloudfront create-invalidation --distribution-id $STAGING_CDN_ID --paths "/*"
+
+    demo:
+      - step:
+          name: 'Build and push image'
+          caches:
+            - docker
+          script:
+            - docker build --build-arg SSH_KEY="$SHARED_MODULE_SSH_KEY" -t $DEMO_ECR_REPOSITORY_NAME:latest .
+            - pipe: atlassian/aws-ecr-push-image:2.4.0
+              variables:
+                AWS_ACCESS_KEY_ID: $DEMO_AWS_ACCESS_KEY
+                AWS_SECRET_ACCESS_KEY: $DEMO_AWS_SECRET_KEY
+                AWS_DEFAULT_REGION: $AWS_REGION
+                IMAGE_NAME: $DEMO_ECR_REPOSITORY_NAME
+                PROJECT_NAME: $PROJECT_NAME
+                TAGS: 'latest'
+      - step:
+          name: 'Update Service'
+          image: amazon/aws-cli:2.14.0
+          script:
+            - export AWS_ACCESS_KEY_ID=$DEMO_AWS_ACCESS_KEY
+            - export AWS_SECRET_ACCESS_KEY=$DEMO_AWS_SECRET_KEY
+            - export AWS_DEFAULT_REGION=$AWS_REGION
+            - export PROJECT_NAME=$PROJECT_NAME
+            - export ENVIRONMENT=demo
+            - aws ecs register-task-definition --family $ENVIRONMENT-$PROJECT_NAME-web --container-definitions "$(cat ecs-task-definitions/${ENVIRONMENT}TaskDefinition.json)" --execution-role-arn arn:aws:iam::$DEMO_AWS_ACCOUNT_ID:role/$ENVIRONMENT-$PROJECT_NAME-ecs-execution-role --requires-compatibilities FARGATE --network-mode awsvpc --cpu 1024 --memory 2048 --task-role-arn arn:aws:iam::$DEMO_AWS_ACCOUNT_ID:role/$ENVIRONMENT-$PROJECT_NAME-ecs-task-role
+            - aws ecs update-service --service $ENVIRONMENT-$PROJECT_NAME-web-svc --cluster $ENVIRONMENT-$PROJECT_NAME-cluster --task-definition $ENVIRONMENT-$PROJECT_NAME-web --force-new-deployment
+            - aws ecs wait services-stable --service $ENVIRONMENT-$PROJECT_NAME-web-svc --cluster $ENVIRONMENT-$PROJECT_NAME-cluster
+            - aws cloudfront create-invalidation --distribution-id $DEMO_CDN_ID --paths "/*"
+
+    master:
+      - step:
+          name: 'Build and push image'
+          caches:
+            - docker
+          script:
+            - docker build --build-arg SSH_KEY="$SHARED_MODULE_SSH_KEY" -t $PROD_ECR_REPOSITORY_NAME:latest .
+            - pipe: atlassian/aws-ecr-push-image:2.4.0
+              variables:
+                AWS_ACCESS_KEY_ID: $PROD_AWS_ACCESS_KEY
+                AWS_SECRET_ACCESS_KEY: $PROD_AWS_SECRET_KEY
+                AWS_DEFAULT_REGION: $AWS_REGION
+                IMAGE_NAME: $PROD_ECR_REPOSITORY_NAME
+                PROJECT_NAME: $PROJECT_NAME
+                TAGS: 'latest'
+      - step:
+          name: 'Update Service'
+          image: amazon/aws-cli:2.14.0
+          script:
+            - export AWS_ACCESS_KEY_ID=$PROD_AWS_ACCESS_KEY
+            - export AWS_SECRET_ACCESS_KEY=$PROD_AWS_SECRET_KEY
+            - export AWS_DEFAULT_REGION=$AWS_REGION
+            - export PROJECT_NAME=$PROJECT_NAME
+            - export ENVIRONMENT=prod
+            - aws ecs register-task-definition --family $ENVIRONMENT-$PROJECT_NAME-web --container-definitions "$(cat ecs-task-definitions/${ENVIRONMENT}TaskDefinition.json)" --execution-role-arn arn:aws:iam::$PROD_AWS_ACCOUNT_ID:role/$ENVIRONMENT-$PROJECT_NAME-ecs-execution-role --requires-compatibilities FARGATE --network-mode awsvpc --cpu 1024 --memory 2048 --task-role-arn arn:aws:iam::$PROD_AWS_ACCOUNT_ID:role/$ENVIRONMENT-$PROJECT_NAME-ecs-task-role
+            - aws ecs update-service --service $ENVIRONMENT-$PROJECT_NAME-web-svc --cluster $ENVIRONMENT-$PROJECT_NAME-cluster --task-definition $ENVIRONMENT-$PROJECT_NAME-web --force-new-deployment
+            - aws ecs wait services-stable --service $ENVIRONMENT-$PROJECT_NAME-web-svc --cluster $ENVIRONMENT-$PROJECT_NAME-cluster
+            - aws cloudfront create-invalidation --distribution-id $PROD_CDN_ID --paths "/*"
