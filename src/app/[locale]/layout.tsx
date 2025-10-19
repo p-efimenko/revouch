@@ -25,7 +25,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<'/[
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
- 
+
       <body>
         <Providers locale={locale} messages={messages}>
           {children}
