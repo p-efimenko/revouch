@@ -15,20 +15,22 @@ type LoginStepProps = {
   onNext: () => void
 }
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL!
+
 export const LoginStep = (props: LoginStepProps) => {
   const { onNext } = props
 
+  const t = useTranslations()
+
   const [isGooglePending, startGoogleTransition] = useTransition()
   const [isApplePending, startAppleTransition] = useTransition()
-
-  const t = useTranslations('Login')
 
   const handleLoginWithGoogle = () => {
     startGoogleTransition(async () => {
       await signIn(
         'cognito',
         {
-          callbackUrl: 'http://localhost:3000',
+          callbackUrl: BASE_URL,
         },
         {
           identity_provider: 'Google',
@@ -42,7 +44,7 @@ export const LoginStep = (props: LoginStepProps) => {
       await signIn(
         'cognito',
         {
-          callbackUrl: 'http://localhost:3000',
+          callbackUrl: BASE_URL,
         },
         {
           identity_provider: 'SignInWithApple',
@@ -67,7 +69,7 @@ export const LoginStep = (props: LoginStepProps) => {
             onClick={() => handleLoginWithFacebook()}
             disabled
           >
-            Continue with Facebook
+            {t('auth.login.button.facebook')}
           </Button>
 
           <Button
@@ -77,7 +79,7 @@ export const LoginStep = (props: LoginStepProps) => {
             onClick={() => handleLoginWithApple()}
             loading={isApplePending}
           >
-            Continue with Apple
+            {t('auth.login.button.apple')}
           </Button>
 
           <Button
@@ -87,33 +89,33 @@ export const LoginStep = (props: LoginStepProps) => {
             onClick={() => handleLoginWithGoogle()}
             loading={isGooglePending}
           >
-            Continue with Google
+            {t('auth.login.button.google')}
           </Button>
         </Stack>
 
         <Divider>
           <Typography px={14} variant="p3" color="black.600">
-            or Continue wit Email
+            {t('auth.login.or_continue_with_email')}
           </Typography>
         </Divider>
 
         <Button size="extra-large" component={NextLink} href="/sign_up">
-          Create account
+          {t('auth.login.button.create_account')}
         </Button>
       </Stack>
 
       <Stack textAlign="center" spacing={34} mt={16}>
         <Typography variant="p4" color="text.secondary">
           <Stack spacing={2}>
-            <Box component="span">By creating an account, you agree to our</Box>
+            <Box component="span">{t('auth.login.agree_terms')}</Box>
 
             <Stack spacing={4} direction="row" justifyContent="center">
               <Link component={NextLink} href="/policy" color="text.secondary" underline="always">
-                Privacy Policy
+                {t('shared.common.privacy_policy')}
               </Link>
-              <Box component="span">and</Box>
+              <Box component="span">{t('shared.common.and')}</Box>
               <Link component={NextLink} href="/terms" color="text.secondary" underline="always">
-                Terms of Service
+                {t('shared.common.terms_of_service')}
               </Link>
             </Stack>
           </Stack>
@@ -121,11 +123,11 @@ export const LoginStep = (props: LoginStepProps) => {
 
         <Typography variant="p3" color="text.secondary">
           <Box component="span" mr={4}>
-            Have an account already?
+            {t('auth.have_an_account_already')}
           </Box>
 
           <Link component="button" onClick={onNext} sx={{ verticalAlign: 'top' }}>
-            Log in
+            {t('shared.button.log_in')}
           </Link>
         </Typography>
       </Stack>

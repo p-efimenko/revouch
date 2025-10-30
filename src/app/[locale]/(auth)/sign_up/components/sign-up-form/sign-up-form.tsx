@@ -6,6 +6,7 @@ import { signUp } from 'aws-amplify/auth'
 import { signIn } from 'next-auth/react'
 
 import { useTransition } from 'react'
+import { useTranslations } from 'next-intl'
 import { useAppForm } from '@/hooks/form'
 import { useToast } from '@/hooks'
 
@@ -35,9 +36,8 @@ export const SignUpForm = () => {
   const config = Amplify.getConfig()
 
   console.log('Amplify:', config)
-  console.log('NEXT_PUBLIC_COGNITO_CLIENT_ID:', process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID)
-  console.log('NEXT_PUBLIC_COGNITO_USER_POOL_ID:', process.env.NEXT_PUBLIC_COGNITO_USER_POOL_ID)
 
+  const t = useTranslations()
   const toast = useToast()
 
   const form = useAppForm({
@@ -71,7 +71,7 @@ export const SignUpForm = () => {
           callbackUrl: '/',
         })
 
-        toast.success('Account created successfully')
+        toast.success(t('auth.sign_up.success.account_created'))
       } catch (e) {
         const error = e as Error
         // handle error from cognito to form
@@ -79,13 +79,13 @@ export const SignUpForm = () => {
           form.setErrorMap({
             onDynamic: {
               fields: {
-                email: [{ message: 'Username already exists' }],
+                email: [{ message: t('auth.sign_up.errors.username_already_exists') }],
               },
             },
           })
         } else {
           console.error(error)
-          toast.error(error.message)
+          toast.error(t('shared.errors.unexpected_error'))
         }
       }
     })
@@ -95,7 +95,7 @@ export const SignUpForm = () => {
     <Box width="100%">
       <Stack spacing={16}>
         <Typography variant="h3" color="text.primary" textAlign="center">
-          Create an account
+          {t('auth.sign_up.button.create_account')}
         </Typography>
 
         <form
@@ -108,15 +108,17 @@ export const SignUpForm = () => {
         >
           <Stack spacing={8}>
             <form.AppField name="name">
-              {(field) => <field.TextField placeholder="Name" endIcon="profile" />}
+              {(field) => (
+                <field.TextField placeholder={t('shared.forms.name')} endIcon="profile" />
+              )}
             </form.AppField>
 
             <form.AppField name="email">
-              {(field) => <field.TextField placeholder="Email" endIcon="email" />}
+              {(field) => <field.TextField placeholder={t('shared.forms.email')} endIcon="email" />}
             </form.AppField>
 
             <form.AppField name="password">
-              {(field) => <field.PasswordField placeholder="Password" />}
+              {(field) => <field.PasswordField placeholder={t('shared.forms.password')} />}
             </form.AppField>
           </Stack>
         </form>
@@ -132,17 +134,17 @@ export const SignUpForm = () => {
           onClick={() => form.handleSubmit({ submitAction: 'create-account' })}
           loading={isPending}
         >
-          Create account
+          {t('auth.sign_up.button.create_account')}
         </Button>
 
         <Stack textAlign="center">
           <Typography variant="p3" color="text.secondary">
             <Box component="span" mr={4}>
-              Have an account already?
+              {t('auth.have_an_account_already')}
             </Box>
 
             <Link component={NextLink} href="/login" sx={{ verticalAlign: 'top' }}>
-              Log in
+              {t('shared.button.log_in')}
             </Link>
           </Typography>
         </Stack>

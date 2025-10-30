@@ -11,12 +11,12 @@ type ToastOptions = Omit<OptionsObject, 'variant'>
 export const useToast = () => {
   const showToast =
     (variant: VariantType) =>
-    (message: SnackbarMessage, options: ToastOptions = {}) =>
-      enqueueSnackbar({
-        message,
-        ...options,
-        variant,
-      })
+      (message: SnackbarMessage, options: ToastOptions = {}) =>
+        enqueueSnackbar({
+          message,
+          ...options,
+          variant,
+        })
 
   return {
     success: showToast('success'),

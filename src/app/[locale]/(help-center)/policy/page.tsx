@@ -1,18 +1,19 @@
+import NextLink from 'next/link'
+
 import { Icon } from '@/components/ui'
 import { IconButton, Stack, Typography } from '@mui/material'
-import NextLink from 'next/link'
 
 export default function Policy() {
   return (
-    <Stack width="600px" alignItems="flex-start" margin="0 auto" pt={24} pb={102}>
-      <IconButton
-        component={NextLink}
-        href="/login"
-        sx={{ verticalAlign: 'top' }}
-        aria-label="Back to login"
-      >
-        <Icon name="arrow-left" size={16} />
-      </IconButton>
+    <Stack maxWidth="600px" alignItems="flex-start" margin="0 auto" pt={24} pb={102} px={{ xs: 32, md: 0 }}>
+      <NextLink href="/login">
+        <IconButton
+          sx={{ verticalAlign: 'top' }}
+          aria-label="Back to login"
+        >
+          <Icon name="arrow-left" size={16} />
+        </IconButton>
+      </NextLink>
 
       <Stack
         mt={48}
@@ -31,15 +32,15 @@ export default function Policy() {
 
       <Stack spacing={22}>
         <Typography variant="p2">
-          {`Don't bother typing “lorem ipsum” into Google translate. If you already tried, you may have gotten anything from "NATO" to "China", depending on how you capitalized the letters. The bizarre translation was fodder for conspiracy theories, but Google has since updated its “lorem ipsum” translation to, boringly enough, “lorem ipsum”.`}
+          {'Don\'t bother typing “lorem ipsum” into Google translate. If you already tried, you may have gotten anything from "NATO" to "China", depending on how you capitalized the letters. The bizarre translation was fodder for conspiracy theories, but Google has since updated its “lorem ipsum” translation to, boringly enough, “lorem ipsum”.'}
         </Typography>
 
         <Typography variant="p2">
-          {`One brave soul did take a stab at translating the almost-not-quite-Latin. According to The Guardian, Jaspreet Singh Boparai undertook the challenge with the goal of making the text “precisely as incoherent in English as it is in Latin - and to make it incoherent in the same way”. As a result, “the Greek "eu" in Latin became the French "bien" [...] and the "-ing" ending in "lorem ipsum" seemed best rendered by an "-iendum" in English”.`}
+          {'One brave soul did take a stab at translating the almost-not-quite-Latin. According to The Guardian, Jaspreet Singh Boparai undertook the challenge with the goal of making the text “precisely as incoherent in English as it is in Latin - and to make it incoherent in the same way”. As a result, “the Greek "eu" in Latin became the French "bien" [...] and the "-ing" ending in "lorem ipsum" seemed best rendered by an "-iendum" in English”.'}
         </Typography>
 
         <Typography variant="p2">
-          {`Here is the classic lorem ipsum passage followed by Boparai's odd, yet
+          {`Here is the classic lorem ipsum passage Followers by Boparai's odd, yet
           mesmerizing version: <br />
           “Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam
           hendrerit nisi sed sollicitudin pellentesque. Nunc posuere purus

@@ -3,17 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "npm run with-icons next dev",
-    "dev:turbo": "npm run with-icons next dev --turbopack",
-    "build": "npm run with-icons next build --turbopack",
-    "start": "npm run with-icons next start",
+    "dev": "pnpm run build:dependencies && next dev",
+    "build": "pnpm run build:dependencies && next build",
+    "start": "pnpm run build:dependencies && next start",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "build:icons": "tsx ./svg/build-icons.mts --log=verbose",
-    "with-icons": "npm run build:icons &&"
+    "build:dependencies": "pnpm run build:icons && pnpm run api:generate",
+    "api:generate": "orval && pnpm run api:format",
+    "api:format": "node scripts/generate-api-index.mjs && node scripts/clean-api-files.mjs"
   },
   "dependencies": {
-    "@aws-amplify/adapter-nextjs": "^1.6.10",
     "@aws-sdk/client-cognito-identity-provider": "^3.908.0",
     "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.14.0",
@@ -27,24 +27,31 @@
     "@tanstack/react-query-devtools": "^5.90.2",
     "aws-amplify": "^6.15.7",
     "mui-one-time-password-input": "^5.0.0",
-    "next": "15.5.4",
+    "next": "16.0.0",
     "next-auth": "^4.24.11",
     "next-intl": "^4.3.9",
+    "next-intl-split": "^1.2.9",
     "notistack": "^3.0.2",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "zod": "^4.1.11"
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "react-dropzone": "^14.3.8",
+    "react-easy-crop": "^5.5.3",
+    "react-intersection-observer": "^10.0.0",
+    "zod": "^4.1.11",
+    "zustand": "^5.0.8"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@stylistic/eslint-plugin": "^5.4.0",
     "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.2",
     "@typescript-eslint/eslint-plugin": "^8.46.1",
     "@typescript-eslint/parser": "^8.46.1",
+    "ajv": "^8.17.1",
+    "babel-plugin-react-compiler": "^1.0.0",
     "eslint": "^9.37.0",
-    "eslint-config-next": "15.5.4",
+    "eslint-config-next": "16.0.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-prettier": "^5.5.4",
@@ -52,8 +59,26 @@
     "fs-extra": "^11.3.2",
     "glob": "^11.0.3",
     "node-html-parser": "^7.0.1",
+    "orval": "^7.13.2",
     "prettier": "^3.6.2",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3"
+  },
+  "overrides": {
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.2"
+  },
+  "packageManager": "pnpm@10.19.0",
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": ">=v22.21.0",
+      "onFail": "error"
+    },
+    "packageManager": {
+      "name": "pnpm",
+      "version": "10.19.0",
+      "onFail": "error"
+    }
   }
 }

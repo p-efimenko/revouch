@@ -1,7 +1,9 @@
 'use client'
 
 import NextLink from 'next/link'
+
 import { useTransition } from 'react'
+import { useTranslations } from 'next-intl'
 import { useAppForm } from '@/hooks/form'
 import { useToast } from '@/hooks'
 
@@ -29,6 +31,7 @@ export const PasswordRecoveryStep = (props: PasswordRecoveryStepProps) => {
 
   const [isPending, startTransition] = useTransition()
 
+  const t = useTranslations()
   const toast = useToast()
 
   const form = useAppForm({
@@ -42,25 +45,26 @@ export const PasswordRecoveryStep = (props: PasswordRecoveryStepProps) => {
   const onSubmit = (value: z.input<typeof schema>) => {
     startTransition(async () => {
       try {
-        await resetPassword(value.email)
+        await resetPassword({ email: value.email })
 
         onNext(value.email)
       } catch (e) {
-        const error = e as BackendError
+        const err = e as Error
+        const error = JSON.parse(err.message || '{}') as BackendError
 
         switch (error.code) {
           case 'USER_NOT_FOUND': {
             form.setErrorMap({
               onDynamic: {
                 fields: {
-                  email: [{ message: 'Email is wrong or not found.' }],
+                  email: [{ message: t('auth.reset_password.errors.user_not_found') }],
                 },
               },
             })
             break
           }
           default: {
-            toast.error('An unexpected error occurred. Please try again.')
+            toast.error(t('shared.errors.unexpected_error'))
             console.error(error)
             break
           }
@@ -73,7 +77,7 @@ export const PasswordRecoveryStep = (props: PasswordRecoveryStepProps) => {
     <Box width="100%">
       <Stack spacing={16}>
         <Typography variant="h3" color="text.primary" textAlign="center">
-          Password recovery
+          {t('auth.reset_password.title')}
         </Typography>
 
         <form
@@ -85,7 +89,7 @@ export const PasswordRecoveryStep = (props: PasswordRecoveryStepProps) => {
         >
           <Stack spacing={8}>
             <form.AppField name="email">
-              {(field) => <field.TextField placeholder="Email" endIcon="email" />}
+              {(field) => <field.TextField placeholder={t('shared.forms.email')} endIcon="email" />}
             </form.AppField>
           </Stack>
 
@@ -97,7 +101,7 @@ export const PasswordRecoveryStep = (props: PasswordRecoveryStepProps) => {
             onClick={() => form.handleSubmit({ submitAction: 'reset-password' })}
             loading={isPending}
           >
-            Reset Password
+            {t('auth.reset_password.button.reset_password')}
           </Button>
         </form>
 
@@ -109,7 +113,7 @@ export const PasswordRecoveryStep = (props: PasswordRecoveryStepProps) => {
               color="text.secondary"
               sx={{ verticalAlign: 'top' }}
             >
-              Back
+              {t('shared.button.back')}
             </Link>
           </Typography>
         </Stack>

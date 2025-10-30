@@ -1,0 +1,3 @@
+export { FriendsClient } from './FriendsClient'
+
+

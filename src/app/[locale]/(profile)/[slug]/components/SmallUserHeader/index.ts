@@ -1,0 +1,1 @@
+export { SmallUserHeader } from './SmallUserHeader'

@@ -1,6 +1,7 @@
 'use client'
 
 import { useTransition } from 'react'
+import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import { useAppForm } from '@/hooks/form'
 import { useToast } from '@/hooks'
@@ -25,15 +26,14 @@ const defaultValues: z.input<typeof schema> = {
 
 type NewPasswordStepProps = {
   email: string
-  onBack: () => void
-  onNext: () => void
 }
 
 export const NewPasswordStep = (props: NewPasswordStepProps) => {
-  const { onBack, email } = props
+  const { email } = props
 
   const [isPending, startTransition] = useTransition()
 
+  const t = useTranslations()
   const toast = useToast()
   const router = useRouter()
 
@@ -60,10 +60,10 @@ export const NewPasswordStep = (props: NewPasswordStepProps) => {
 
         await signOut()
 
-        toast.success('Password updated successfully!')
+        toast.success(t('auth.reset_password.success.password_updated'))
         router.replace('/login')
       } catch (e) {
-        toast.error('An unexpected error occurred. Please try again.')
+        toast.error(t('shared.errors.unexpected_error'))
         console.error(e)
       }
     })
@@ -73,7 +73,7 @@ export const NewPasswordStep = (props: NewPasswordStepProps) => {
     <Box width="100%">
       <Stack spacing={16}>
         <Typography variant="h3" color="text.primary" textAlign="center">
-          Choose a new password
+          {t('auth.reset_password.new_password_title')}
         </Typography>
 
         <form
@@ -86,7 +86,7 @@ export const NewPasswordStep = (props: NewPasswordStepProps) => {
         >
           <Stack spacing={8}>
             <form.AppField name="password">
-              {(field) => <field.PasswordField placeholder="Password" />}
+              {(field) => <field.PasswordField placeholder={t('shared.forms.password')} />}
             </form.AppField>
           </Stack>
         </form>
@@ -102,21 +102,8 @@ export const NewPasswordStep = (props: NewPasswordStepProps) => {
           onClick={() => form.handleSubmit({ submitAction: 'new-password' })}
           loading={isPending}
         >
-          Update password
+          {t('auth.reset_password.button.update_password')}
         </Button>
-
-        <Stack textAlign="center" pt={24}>
-          <Typography variant="p3" color="text.secondary">
-            <Link
-              component="button"
-              onClick={onBack}
-              color="text.secondary"
-              sx={{ verticalAlign: 'top' }}
-            >
-              Back
-            </Link>
-          </Typography>
-        </Stack>
       </Stack>
     </Box>
   )

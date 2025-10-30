@@ -1,0 +1,5 @@
+export * from './types'
+export * from './hooks'
+export * from './Modal'
+export * from './ModalsProvider'
+export { ModalsStoreProvider, useModalsStore } from './store/modals-store-provider'

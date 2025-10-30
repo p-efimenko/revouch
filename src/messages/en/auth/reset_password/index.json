@@ -1,0 +1,20 @@
+{
+  "title": "Password recovery",
+  "new_password_title": "Choose a new password",
+  "verification_code_sent": "Verification code was sent",
+  "verification_code_sent_message": "We’ve sent you verification code to {email}",
+  "verification_code_resent_successfully": "Verification code resent successfully!",
+  "resend_code_in": "Resend code in {count} sec",
+  "button": {
+    "reset_password": "Reset Password",
+    "resend_code": "Resend code",
+    "update_password": "Update password"
+  },
+  "errors": {
+    "user_not_found": "Email is wrong or not found.",
+    "invalid_verification_code": "Invalid verification code."
+  },
+  "success": {
+    "password_updated": "Password updated successfully!"
+  }
+}

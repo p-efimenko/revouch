@@ -1,0 +1,15 @@
+{
+  "button": {
+    "facebook": "Continue with Facebook",
+    "apple": "Continue with Apple",
+    "google": "Continue with Google",
+    "create_account": "Create account"
+  },
+  "or_continue_with_email": "or Continue with Email",
+  "agree_terms": "By creating an account, you agree to our",
+  "sign_in": "Sign in",
+  "forgot_password": "Forgot password?",
+  "error": {
+    "invalid_email_or_password": "Invalid email or password. Please try again."
+  }
+}

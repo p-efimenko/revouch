@@ -1,0 +1,11 @@
+{
+  "button": {
+    "create_account": "Create account"
+  },
+  "errors": {
+    "username_already_exists": "Username already exists"
+  },
+  "success": {
+    "account_created": "Account created successfully"
+  }
+}

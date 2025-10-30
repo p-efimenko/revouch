@@ -4,8 +4,9 @@ import NextLink from 'next/link'
 
 import { signIn } from 'next-auth/react'
 
-import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'
+import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { useAppForm } from '@/hooks/form'
 import { useToast } from '@/hooks'
 
@@ -32,6 +33,7 @@ export const EmailStep = (props: EmailStepProps) => {
 
   const [isPending, startTransition] = useTransition()
 
+  const t = useTranslations()
   const navigate = useRouter()
   const toast = useToast()
 
@@ -52,18 +54,18 @@ export const EmailStep = (props: EmailStepProps) => {
 
           if (response?.error) {
             // Handle authentication error
-            toast.error('Invalid email or password. Please try again.')
+            toast.error(t('auth.login.error.invalid_email_or_password'))
           } else if (response?.ok) {
             // Authentication successful - redirect to home page
             navigate.replace('/')
           } else {
             // Handle other errors
-            toast.error('An error occurred during sign in. Please try again.')
+            toast.error(t('shared.errors.unexpected_error'))
           }
         } catch (e) {
           const error = e as Error
           console.error('Sign in error:', error)
-          toast.error('An unexpected error occurred. Please try again.')
+          toast.error(t('shared.errors.unexpected_error'))
         }
       })
     },
@@ -72,7 +74,7 @@ export const EmailStep = (props: EmailStepProps) => {
   return (
     <Stack width="100%" spacing={16} alignItems="center">
       <Typography variant="h3" color="text.primary">
-        Sign in
+        {t('auth.login.sign_in')}
       </Typography>
 
       <Box
@@ -84,17 +86,21 @@ export const EmailStep = (props: EmailStepProps) => {
           e.stopPropagation()
         }}
       >
+
         <Stack spacing={8}>
+
           <form.AppField name="email">
-            {(field) => <field.TextField placeholder="Email" endIcon="email" />}
+            {(field) => <field.TextField placeholder={t('shared.forms.email')} endIcon="email" />}
           </form.AppField>
 
           <form.AppField name="password">
             {(field) => {
-              return <field.PasswordField placeholder="Password" />
+              return <field.PasswordField placeholder={t('shared.forms.password')} />
             }}
           </form.AppField>
+          
         </Stack>
+
       </Box>
 
       <Button
@@ -104,11 +110,11 @@ export const EmailStep = (props: EmailStepProps) => {
         onClick={() => form.handleSubmit({ submitAction: 'login' })}
         loading={isPending}
       >
-        Log in
+        {t('shared.button.log_in')}
       </Button>
 
       <Link component={NextLink} href="/reset_password" variant="p3" color="blue.500">
-        Forgot password?
+        {t('auth.login.forgot_password')}
       </Link>
 
       <Typography variant="p3" color="text.secondary">
@@ -118,7 +124,7 @@ export const EmailStep = (props: EmailStepProps) => {
           color="text.secondary"
           sx={{ verticalAlign: 'top' }}
         >
-          Back
+          {t('shared.button.back')}
         </Link>
       </Typography>
     </Stack>

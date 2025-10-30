@@ -4,37 +4,45 @@ import Link from 'next/link'
 import { Session } from 'next-auth'
 import { signOut } from 'next-auth/react'
 import { useLocale, useTranslations } from 'next-intl'
+import { SidebarLayout } from '@/components/layouts'
+import { useModal } from '@/components/ui/Modal'
 
 type Props = {
   session: Session | null
 }
 
 export default function Index({ session }: Props) {
-  const t = useTranslations('Index')
-  const locale = useLocale()
-
   function onLogoutClick() {
     signOut()
   }
 
+  const { open } = useModal('TestModal')
+
   return (
     <>
-      {session?.user?.email ? (
+      {/* {session?.user?.email ? (
         <>
           <p>Logged in as {session.user.email}</p>
           <p>
-            <Link href={locale + '/secret'}>{t('secret')}</Link>
+            <Link href={'/secret'}>Secret page</Link>
           </p>
           <button onClick={onLogoutClick} type="button">
-            {t('logout')}
+            Logout
           </button>
         </>
-      ) : (
-        <>
-          <p>{t('loggedOut')}</p>
-          <Link href={locale + '/login'}>{t('login')}</Link>
-        </>
-      )}
+      ) : ( */}
+      <>
+        <SidebarLayout>
+          {/* <Profile /> */}
+          <p>You are logged out</p>
+          <Link href={'/login'}>Login</Link>
+
+          <button onClick={() => open()} type="button">
+            Open Test Modal
+          </button>
+        </SidebarLayout>
+      </>
+      {/* )} */}
     </>
   )
 }

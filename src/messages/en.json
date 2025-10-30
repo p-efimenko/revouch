@@ -1,37 +1,79 @@
 {
-  "SignUp": {
-    "title": "Sign Up",
-    "username": "Username",
-    "password": "Password",
-    "submit": "Sign Up"
+  "auth": {
+    "have_an_account_already": "Have an account already?",
+    "login": {
+      "button": {
+        "facebook": "Continue with Facebook",
+        "apple": "Continue with Apple",
+        "google": "Continue with Google",
+        "create_account": "Create account"
+      },
+      "or_continue_with_email": "or Continue with Email",
+      "agree_terms": "By creating an account, you agree to our",
+      "sign_in": "Sign in",
+      "forgot_password": "Forgot password?",
+      "error": {
+        "invalid_email_or_password": "Invalid email or password. Please try again."
+      }
+    },
+    "reset_password": {
+      "title": "Password recovery",
+      "new_password_title": "Choose a new password",
+      "verification_code_sent": "Verification code was sent",
+      "verification_code_sent_message": "We’ve sent you verification code to {email}",
+      "verification_code_resent_successfully": "Verification code resent successfully!",
+      "resend_code_in": "Resend code in {count} sec",
+      "button": {
+        "reset_password": "Reset Password",
+        "resend_code": "Resend code",
+        "update_password": "Update password"
+      },
+      "errors": {
+        "user_not_found": "Email is wrong or not found.",
+        "invalid_verification_code": "Invalid verification code."
+      },
+      "success": {
+        "password_updated": "Password updated successfully!"
+      }
+    },
+    "sign_up": {
+      "button": {
+        "create_account": "Create account"
+      },
+      "errors": {
+        "username_already_exists": "Username already exists"
+      },
+      "success": {
+        "account_created": "Account created successfully"
+      }
+    }
   },
-  "Index": {
-    "title": "Home",
-    "loggedIn": "Logged in as {username}",
-    "loggedOut": "You are logged out.",
-    "login": "Login",
-    "logout": "Logout",
-    "secret": "Secret page for logged in users"
-  },
-  "LocaleLayout": {
-    "title": "next-intl with Auth.js example"
-  },
-  "Login": {
-    "title": "Login",
-    "username": "Username",
-    "password": "Password",
-    "submit": "Login",
-    "error": "{error, select, CredentialsSignin {Invalid username or password} other {Unknown error}}"
-  },
-  "LocaleSwitcher": {
-    "switchLocale": "Switch to {locale, select, de {German} en {English} other {Unknown}}"
-  },
-  "Secret": {
-    "title": "Secret page",
-    "description": "This page is only visible for logged in users."
-  },
-  "NotFoundPage": {
-    "description": "Please double-check the browser address bar or use the navigation to go to a known page.",
-    "title": "Page not found"
+  "shared": {
+    "button": {
+      "log_in": "Log in",
+      "back": "Back"
+    },
+    "common": {
+      "and": "and",
+      "privacy_policy": "Privacy Policy",
+      "terms_of_service": "Terms of Service",
+      "forgot_password": "Forgot password?"
+    },
+    "errors": {
+      "unexpected_error": "An unexpected error occurred. Please try again.",
+      "attempt_limit_exceeded": "Attempt limit exceeded, please try after some time.",
+      "password": {
+        "length": "Length: 8-20 characters",
+        "capital_letter": "At least one capital letter (A-Z)",
+        "small_letter": "At least one small letter (a-z)",
+        "digit": "At least one digit (0-9)",
+        "special_character": "At least one special character (e.g.,!@#$%^&*)"
+      }
+    },
+    "forms": {
+      "name": "Name",
+      "email": "Email",
+      "password": "Password"
+    }
   }
 }

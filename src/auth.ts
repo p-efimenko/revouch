@@ -11,6 +11,7 @@ import {
 } from '@aws-sdk/client-cognito-identity-provider'
 
 import type { UserAttributesType } from '@/types/next-auth'
+import { fetchUserData } from '@/utils/fetch-with-token'
 
 const cognitoIdentityProvider = new CognitoIdentityProvider({
   region: process.env.COGNITO_REGION,
@@ -40,7 +41,8 @@ export const auth: AuthOptions = {
   },
 
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
+      // Initial sign in - store token info
       if (user) {
         // @ts-expect-error - fix type error
         token.tokenId = user.tokenId
@@ -50,12 +52,37 @@ export const auth: AuthOptions = {
         token.refreshToken = user.refreshToken
         // @ts-expect-error - fix type error
         token.accessTokenExpires = user.expiresIn
+        token.user = null
+        token.userFetchTime = null
       }
+
+      // Fetch user data from backend if we have an access token
+      // Only fetch if not already cached or on trigger (update)
+      const accessToken = token.accessToken
+      if (
+        accessToken &&
+        typeof accessToken === 'string' &&
+        (!token.user || trigger === 'update')
+      ) {
+        const user = await fetchUserData(accessToken)
+
+        if (user) {
+          token.user = user
+          // Store timestamp for cache invalidation
+          token.userFetchTime = new Date().toISOString()
+        }
+      }
+
       return token
     },
     async session({ session, token }) {
       return {
         ...session,
+        user: {
+          ...session.user,
+          // @ts-expect-error - fix type error
+          ...token.user,
+        },
         tokens: {
           idToken: token.idToken,
           accessToken: token.accessToken,
@@ -159,6 +186,12 @@ export const auth: AuthOptions = {
       },
     }),
   ],
+
+  // NOTE: signIn event is for side effects like logging, analytics, etc.
+  // It CANNOT modify the session. User data is fetched in the JWT callback above.
+  // 
+  // If you need to update the session after data changes, use the updateSession hook
+  // or call update() from useSession to trigger 'update' trigger in JWT callback
 }
 
 export default auth

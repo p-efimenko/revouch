@@ -1,0 +1,11 @@
+{
+  "unexpected_error": "An unexpected error occurred. Please try again.",
+  "attempt_limit_exceeded": "Attempt limit exceeded, please try after some time.",
+  "password": {
+    "length": "Length: 8-20 characters",
+    "capital_letter": "At least one capital letter (A-Z)",
+    "small_letter": "At least one small letter (a-z)",
+    "digit": "At least one digit (0-9)",
+    "special_character": "At least one special character (e.g.,!@#$%^&*)"
+  }
+}

@@ -7,7 +7,7 @@ export { type IconName }
 
 export type ResponsiveSize = Partial<Record<Breakpoint, number | string>>
 
-const href = './icons/sprite.svg'
+const href = '/icons/sprite.svg'
 
 export type IconProps = {
   name: IconName
@@ -17,7 +17,10 @@ export type IconProps = {
 
 export const Icon = ({ name, size = 24, sx, ...props }: IconProps) => {
   return (
-    <SvgIcon sx={{ width: size, height: size, ...sx }} {...props}>
+    <SvgIcon
+      sx={{ width: size, height: size, ...sx }}
+      {...props}
+    >
       <use href={`${href}#${name}`} />
     </SvgIcon>
   )

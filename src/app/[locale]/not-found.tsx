@@ -1,15 +1,13 @@
 // Note that `app/[locale]/[...rest]/page.tsx`
 // is necessary for this page to render.
 
-import { useTranslations } from 'next-intl'
-
 export default function NotFoundPage() {
-  const t = useTranslations('NotFoundPage')
-
   return (
     <div>
-      <h1>{t('title')}</h1>
-      <p>{t('description')}</p>
+      <h1>Page not found</h1>
+      <p>
+        Please double-check the browser address bar or use the navigation to go to a known page.
+      </p>
     </div>
   )
 }

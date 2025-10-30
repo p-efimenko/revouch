@@ -1,6 +1,7 @@
 'use client'
 
 import { useTransition } from 'react'
+import { useTranslations } from 'next-intl'
 import { useAppForm } from '@/hooks/form'
 import { useTimer } from '@/hooks/common'
 import { useToast } from '@/hooks'
@@ -34,6 +35,7 @@ export const VerificationCodeStep = (props: VerificationCodeStepProps) => {
 
   const [isPending, startTransition] = useTransition()
 
+  const t = useTranslations()
   const toast = useToast()
 
   const form = useAppForm({
@@ -62,18 +64,18 @@ export const VerificationCodeStep = (props: VerificationCodeStepProps) => {
             form.setErrorMap({
               onDynamic: {
                 fields: {
-                  code: [{ message: 'Invalid verification code.' }],
+                  code: [{ message: t('auth.reset_password.errors.invalid_verification_code') }],
                 },
               },
             })
             break
           }
           case 'LimitExceededException': {
-            toast.error('Attempt limit exceeded, please try after some time.')
+            toast.error(t('shared.errors.attempt_limit_exceeded'))
             break
           }
           default: {
-            toast.error('An unexpected error occurred. Please try again.')
+            toast.error(t('shared.errors.unexpected_error'))
             console.error(error)
             break
           }
@@ -89,12 +91,11 @@ export const VerificationCodeStep = (props: VerificationCodeStepProps) => {
     <Box width="100%">
       <Stack alignItems="center" spacing={16}>
         <Typography variant="h3" textAlign="center">
-          Verification code was sent
+          {t('auth.reset_password.verification_code_sent')}
         </Typography>
 
         <Typography variant="p3" textAlign="center">
-          We’ve sent you verification code to <br />
-          {email}
+          {t('auth.reset_password.verification_code_sent_message', { email })}
         </Typography>
 
         <form
@@ -126,7 +127,7 @@ export const VerificationCodeStep = (props: VerificationCodeStepProps) => {
             color="text.secondary"
             sx={{ verticalAlign: 'top' }}
           >
-            Back
+            {t('shared.button.back')}
           </Link>
         </Typography>
       </Stack>
@@ -137,6 +138,7 @@ export const VerificationCodeStep = (props: VerificationCodeStepProps) => {
 const Timer = ({ email }: { email: string }) => {
   const [isResendPending, startResendTransition] = useTransition()
 
+  const t = useTranslations()
   const timer = useTimer(TIMER_VALUE)
   const toast = useToast()
 
@@ -147,12 +149,12 @@ const Timer = ({ email }: { email: string }) => {
           username: email,
         })
 
-        toast.success('Verification code resent successfully!')
+        toast.success(t('auth.reset_password.verification_code_resent_successfully'))
         timer.restart(TIMER_VALUE)
       } catch (e) {
         timer.clear()
         console.error(e)
-        toast.error('An unexpected error occurred. Please try again.')
+        toast.error(t('shared.errors.unexpected_error'))
       }
     })
   }
@@ -161,7 +163,7 @@ const Timer = ({ email }: { email: string }) => {
     <>
       {timer.active ? (
         <Typography variant="p3" color="text.secondary" height={32}>
-          Resend code in {timer.count} sec
+          {t('auth.reset_password.resend_code_in', { count: timer.count })}
         </Typography>
       ) : (
         <Button
@@ -171,7 +173,7 @@ const Timer = ({ email }: { email: string }) => {
           onClick={() => handleResendCode()}
           loading={isResendPending}
         >
-          Resend
+          {t('auth.reset_password.button.resend_code')}
         </Button>
       )}
     </>
