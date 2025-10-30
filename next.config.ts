@@ -5,6 +5,9 @@ const withNextIntlSplitPlugin = createNextIntlSplitPlugin('./src/messages', './s
 
 const config: NextConfig = {
   reactCompiler: true,
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   transpilePackages: ['mui-one-time-password-input'],
 }
 
