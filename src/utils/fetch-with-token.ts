@@ -17,6 +17,8 @@ export async function fetchUserData(
       },
     })
 
+    console.log('response', response.json())
+
     if (!response.ok) {
       console.error('Failed to fetch user data:', response.statusText)
       return null
