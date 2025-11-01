@@ -17,15 +17,15 @@ export async function fetchUserData(
       },
     })
 
-    console.log('accessToken', accessToken)
-    console.log('response', await response.json())
-
     if (!response.ok) {
       console.error('Failed to fetch user data:', response.statusText)
       return null
     }
 
     const data = await response.json()
+    console.log('data', data)
+    console.log('token', accessToken)
+    console.log('BASE_URL', BASE_URL)
     return data as UserDataResponseDto
   } catch (error) {
     console.error('Error fetching user data:', error)
