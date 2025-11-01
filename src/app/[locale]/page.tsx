@@ -1,6 +1,6 @@
 import auth from '@/auth'
-
 import { getServerSession } from 'next-auth'
+
 
 import Index from './Index'
 

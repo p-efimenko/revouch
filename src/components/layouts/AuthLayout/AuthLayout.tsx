@@ -16,7 +16,7 @@ export const AuthLayout = ({ children }: { children: React.ReactNode }) => {
       }}
     >
       <NextLink href="/">
-        <Image src="/logo.svg" alt="Revoutch" width={128} height={34} />
+        <Image src="/logo.svg" alt="Revouch" width={128} height={34} />
       </NextLink>
 
       <Box

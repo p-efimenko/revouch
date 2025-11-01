@@ -14,7 +14,7 @@ const createImage = (url: string): Promise<HTMLImageElement> =>
  */
 const getCroppedImage = async (
   imageSrc: string,
-  pixelCrop: { width: number; height: number; x: number; y: number }
+  pixelCrop: { width: number; height: number; x: number; y: number },
 ): Promise<string | null> => {
   const image = await createImage(imageSrc)
   const canvas = document.createElement('canvas')
@@ -55,7 +55,7 @@ const getCroppedImage = async (
     0,
     0,
     pixelCrop.width,
-    pixelCrop.height
+    pixelCrop.height,
   )
 
   return new Promise(resolve => {

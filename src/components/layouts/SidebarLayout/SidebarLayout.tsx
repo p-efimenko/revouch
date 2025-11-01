@@ -34,9 +34,11 @@ export const SidebarLayout = ({ children }: Props) => {
         <IconButton size="extra-large">
           <Icon name="feed" size={16} />
         </IconButton>
+
         <IconButton size="extra-large">
           <Icon name="add-revouch" size={16} />
         </IconButton>
+
         <IconButton
           size="extra-large"
           component={NextLink}
@@ -48,6 +50,7 @@ export const SidebarLayout = ({ children }: Props) => {
           <Icon name="profile" size={16} color={isActiveRoute ? 'primary' : 'inherit'} />
         </IconButton>
       </Sidebar>
+
       <Box
         component="main"
         width="100%"

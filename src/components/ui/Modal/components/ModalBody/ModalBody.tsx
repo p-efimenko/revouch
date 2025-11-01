@@ -1,8 +1,8 @@
-import { DialogContent } from '@mui/material'
+import { DialogContent, type Theme, type SxProps } from '@mui/material'
 
 interface ModalBodyProps {
   dividers?: boolean
-  sx?: Record<string, any>
+  sx?: SxProps<Theme>
   children: React.ReactNode
 }
 

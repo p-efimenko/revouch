@@ -1,48 +1,43 @@
 'use client'
 
-import Link from 'next/link'
-import { Session } from 'next-auth'
 import { signOut } from 'next-auth/react'
-import { useLocale, useTranslations } from 'next-intl'
+import { useRouter } from 'next/navigation'
 import { SidebarLayout } from '@/components/layouts'
-import { useModal } from '@/components/ui/Modal'
+import { Center } from '@/components/ui'
 
-type Props = {
-  session: Session | null
-}
+import { Typography, Stack, Button } from '@mui/material'
+import { Session } from 'next-auth'
 
-export default function Index({ session }: Props) {
-  function onLogoutClick() {
-    signOut()
-  }
+export default function Index({ session }: { session: Session | null }) {
 
-  const { open } = useModal('TestModal')
+  const router = useRouter()
+
+  const isLoggedIn = session !== null
 
   return (
     <>
-      {/* {session?.user?.email ? (
-        <>
-          <p>Logged in as {session.user.email}</p>
-          <p>
-            <Link href={'/secret'}>Secret page</Link>
-          </p>
-          <button onClick={onLogoutClick} type="button">
-            Logout
-          </button>
-        </>
-      ) : ( */}
-      <>
-        <SidebarLayout>
-          {/* <Profile /> */}
-          <p>You are logged out</p>
-          <Link href={'/login'}>Login</Link>
+      <SidebarLayout>
+        <Center>
+          <Stack spacing={16} textAlign="center">
 
-          <button onClick={() => open()} type="button">
-            Open Test Modal
-          </button>
-        </SidebarLayout>
-      </>
-      {/* )} */}
+            <Typography variant="h1">Welcome to Revouch</Typography>
+
+            <Typography variant="p1">
+              {isLoggedIn ? 'You are logged in' : 'You are not logged in'}
+            </Typography>
+
+            {isLoggedIn ? (
+              <Button variant="contained" color="primary" onClick={() => signOut()}>
+                Logout
+              </Button>
+            ) : (
+              <Button variant="contained" color="primary" onClick={() => router.push('/login')}>
+                Login
+              </Button>
+            )}
+          </Stack>
+        </Center>
+      </SidebarLayout>
     </>
   )
 }

@@ -73,7 +73,13 @@ pipelines:
           caches:
             - docker
           script:
-            - docker build --build-arg SSH_KEY="$SHARED_MODULE_SSH_KEY" -t $STAGING_ECR_REPOSITORY_NAME:latest .
+            - |
+              docker build --build-arg SSH_KEY="$SHARED_MODULE_SSH_KEY" \
+                --build-arg NEXT_PUBLIC_COGNITO_USER_POOL_ID="$STAGING_COGNITO_USER_POOL_ID" \
+                --build-arg NEXT_PUBLIC_COGNITO_CLIENT_ID="$STAGING_COGNITO_CLIENT_ID" \
+                --build-arg COGNITO_REGION="$AWS_REGION" \
+                --build-arg COGNITO_ISSUER="$STAGING_COGNITO_ISSUER" \
+                -t $STAGING_ECR_REPOSITORY_NAME:latest .
             - pipe: atlassian/aws-ecr-push-image:2.4.0
               variables:
                 AWS_ACCESS_KEY_ID: $STAGING_AWS_ACCESS_KEY

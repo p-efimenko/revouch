@@ -10,13 +10,22 @@ interface ModalProps {
   isOpen: boolean
   children: ReactNode
   width?: number | string
+  scroll?: 'paper' | 'body'
   isShowClose?: boolean
   onClose: () => void
   onDestroy: () => void
 }
 
 const ModalRoot = (props: ModalProps) => {
-  const { children, isOpen, isShowClose = true, onClose, onDestroy, width } = props
+  const {
+    children,
+    isOpen,
+    isShowClose = true,
+    onClose,
+    onDestroy,
+    width,
+    scroll = 'paper',
+  } = props
 
   return (
     <ModalProvider value={{ onClose, isShowClose }}>
@@ -32,10 +41,10 @@ const ModalRoot = (props: ModalProps) => {
               xs: '95%',
               sm: width,
             },
-            borderRadius: '8px',
+            borderRadius: '16px',
           },
         }}
-        scroll="paper"
+        scroll={scroll}
         onClose={() => onClose()}
         onTransitionExited={onDestroy}
       >

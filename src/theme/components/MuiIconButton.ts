@@ -6,25 +6,25 @@ export const MuiIconButton: Components<Theme>['MuiIconButton'] = {
     disableRipple: true,
   },
   styleOverrides: {
-    root: () => ({}),
+    root: ({ theme }) => ({
+      '&:hover': {
+        backgroundColor: theme.palette.black[100],
+      },
+
+      '&:active': {
+        backgroundColor: theme.palette.black[100],
+      },
+    }),
   },
   variants: [
     {
-      props: { size: 'extra-large' },
+      props: {
+        size: 'extra-large',
+      },
       style: ({ theme }) => ({
         height: 48,
         width: 48,
         borderRadius: 20,
-
-        '&:hover': {
-          backgroundColor: theme.palette.black[100],
-          color: theme.palette.blue[500],
-        },
-
-        '&:active': {
-          backgroundColor: theme.palette.black[100],
-          color: theme.palette.blue[500],
-        },
       }),
     },
   ],

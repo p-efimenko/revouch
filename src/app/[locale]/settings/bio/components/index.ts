@@ -1,2 +1,2 @@
-export * from './form'
-export * from './bio'
+export * from './BioForm'
+export * from './UserAvatar'

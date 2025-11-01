@@ -6,10 +6,6 @@ export const SkeletonList = () => {
       <SkeletonItem />
       <SkeletonItem />
       <SkeletonItem />
-      <SkeletonItem />
-      <SkeletonItem />
-      <SkeletonItem />
-      <SkeletonItem />
     </>
   )
 }

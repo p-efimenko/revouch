@@ -8,7 +8,7 @@ export const ModalFooter = (props: ModalFooterProps) => {
   const { children } = props
 
   return (
-    <DialogActions sx={{ p: 0, bgcolor: 'backgrounds.beige' }} disableSpacing>
+    <DialogActions sx={{ p: 0 }} disableSpacing>
       {children}
     </DialogActions>
   )

@@ -26,7 +26,7 @@ export const Item = ({ user }: any) => {
             <Typography variant="p4" color="text.secondary" noWrap maxWidth={200}>{user.bio}</Typography>
           </Stack>
         </Stack>
-        <FollowButton isFollowing={user.isFollowedByMe} userId={user.id} />
+        <FollowButton user={user} isModal={true} />
       </Stack>
       <Divider />
     </>

@@ -12,7 +12,7 @@ import { useTranslations } from 'next-intl'
 import { useMutation } from '@tanstack/react-query'
 import { useToast, useUpdateSession } from '@/hooks'
 import { getQueryClient } from '@/utils/get-query-client'
-import { ApiError } from '@/types/errors'
+import { useSession } from 'next-auth/react'
 
 const ABOUT_MAX_LENGTH = 256
 
@@ -28,15 +28,14 @@ const defaultValues: z.input<typeof schema> = {
   about: '',
 }
 
-interface FormProps {
-  user: UserDataResponseDto
-}
-
-export const Form = (props: FormProps) => {
-  const { user } = props
-
-  const queryClient = getQueryClient()
+export const BioForm = () => {
+  //const queryClient = getQueryClient()
   //const t = useTranslations()
+  const { data: session } = useSession()
+
+  const user = session?.user as UserDataResponseDto
+
+  console.log('session', session)
   const toast = useToast()
   const { updateSession } = useUpdateSession()
 
@@ -60,7 +59,7 @@ export const Form = (props: FormProps) => {
     mutationFn: (data: UpdateUserDto) => updateMe(data),
     onSuccess: ({ data }) => {
       toast.success('Bio updated successfully')
-      queryClient.invalidateQueries({ queryKey: ['me'] })
+      // queryClient.invalidateQueries({ queryKey: ['me'] })
       updateSession()
     },
     onError: (error) => {
@@ -107,7 +106,7 @@ export const Form = (props: FormProps) => {
         </Stack>
       </Box>
 
-      <Box display="flex" justifyContent="flex-end" mt={64}>
+      <Box display="flex" justifyContent="flex-end" mt={40}>
         <form.Subscribe selector={(state) => state}>
           {({ values }) => {
             const { about = '', name = '' } = values
@@ -122,7 +121,7 @@ export const Form = (props: FormProps) => {
             return (
               <Button
                 type="submit"
-                size="large"
+                size="extra-large"
                 disabled={isDisabled || isPending}
                 onClick={() => form.handleSubmit({ submitAction: 'save' })}
                 loading={isPending}

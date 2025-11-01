@@ -16,6 +16,7 @@ export const MuiButton: Components<Theme>['MuiButton'] = {
       borderRadius: '8px',
       textTransform: 'none',
       boxShadow: 'none',
+      minWidth: '100px',
 
       '&.MuiButton-loading': {
         color: 'transparent !important',

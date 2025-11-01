@@ -1,7 +1,9 @@
 'use server'
 
-import { getServerSession } from 'next-auth'
 import auth from '@/auth'
+import { signOut } from 'next-auth/react'
+import { getServerSession } from 'next-auth'
+
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL!
 
@@ -58,10 +60,21 @@ export const customFetch = async <T>(
   }
 
   const response = await fetch(requestUrl, requestInit)
-  console.log('response', response)
   const data = await getBody<T>(response)
 
+  //
+
   if (!response.ok) {
+    //@ts-expect-error - fix type error
+    const isTokenExpired = data.message?.includes('Token expired')
+
+    if (isTokenExpired) {
+      await signOut({
+        callbackUrl: '/login',
+        redirect: true,
+      })
+    }
+
     throw new Error(JSON.stringify(data))
   }
 

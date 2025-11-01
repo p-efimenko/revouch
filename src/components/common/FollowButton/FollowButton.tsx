@@ -6,20 +6,26 @@ import { Button } from '@mui/material'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useSession } from '@/hooks/common/useSession'
+import { useModal } from '@/components/ui/Modal'
+import type { UserDataResponseDto } from '@/api/models'
 
 type FollowButtonProps = {
-  isFollowing?: boolean
-  userId: string
+  user: UserDataResponseDto,
+  isModal?: boolean
 }
 
 export const FollowButton = (props: FollowButtonProps) => {
-  const { isFollowing: initialIsFollowing = false, userId } = props
+  const { user, isModal = false } = props
+  const { isFollowedByMe = false, id: userId } = user
+
+  const { open } = useModal('UnfollowModal')
+
   // Initialize the custom toast hook for displaying notifications
   const toast = useToast()
   const queryClient = useQueryClient()
   const session = useSession()
   const currentUserId = session?.id
-  const [isFollowing, setIsFollowing] = useState(initialIsFollowing)
+  const [isFollowing, setIsFollowing] = useState(isFollowedByMe)
 
   // Mutation for following a user
   const { mutateAsync: followAsync, isPending: isFollowPending } = useMutation({
@@ -63,7 +69,11 @@ export const FollowButton = (props: FollowButtonProps) => {
   // Handler when the follow/unfollow button is clicked
   const handleClick = () => {
     if (isFollowing) {
-      unfollowAsync(userId)
+      if (isModal) {
+        open({ user, onUnfollow: () => unfollowAsync(userId) })
+      } else {
+        unfollowAsync(userId)
+      }
     } else {
       followAsync(userId)
     }

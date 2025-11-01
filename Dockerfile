@@ -1,6 +1,8 @@
 FROM node:22-alpine
 WORKDIR /app
 
+ARG PNPM_VERSION=9
+RUN corepack enable && corepack prepare pnpm@${PNPM_VERSION} --activate
 
 ARG NEXT_PUBLIC_COGNITO_USER_POOL_ID
 ARG NEXT_PUBLIC_COGNITO_CLIENT_ID
@@ -11,11 +13,11 @@ ENV NEXT_PUBLIC_COGNITO_CLIENT_ID=${NEXT_PUBLIC_COGNITO_CLIENT_ID}
 ENV COGNITO_REGION=${COGNITO_REGION}
 ENV COGNITO_ISSUER=${COGNITO_ISSUER}
 
-COPY package.json package-lock.json* ./
-RUN npm install
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install
 
 COPY . .
-RUN npm run build
+RUN pnpm run build
 
 EXPOSE 3000
-CMD ["npm","run","start"]
+CMD ["pnpm","run","start"]

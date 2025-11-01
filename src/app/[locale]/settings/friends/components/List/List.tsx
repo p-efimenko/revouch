@@ -21,7 +21,6 @@ type ListProps = {
 
 export const List = (props: ListProps) => {
   const { userId, search } = props
-  const [isFirstLoad, setIsFirstLoad] = useState(true)
 
   const {
     data,
@@ -44,21 +43,14 @@ export const List = (props: ListProps) => {
     getNextPageParam,
   })
 
-  useEffect(() => {
-    if (isFirstLoad) {
-      setIsFirstLoad(false)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-
   // Flatten all users from all pages
   const users = useMemo(() => {
     return data?.pages?.flatMap(extractUsersFromPage) ?? []
   }, [data?.pages])
 
   const isNoUsers = !users || users.length === 0
-  const isFetch = isFetchingNextPage || (isFetching && !isFirstLoad)
+  const isFetch = isFetchingNextPage || isFetching
+  const isLoadingFinal = isLoading || isFetch
 
   // Memoize loadMore callback to prevent unnecessary re-renders
   const loadMore = useCallback(() => {
@@ -73,17 +65,8 @@ export const List = (props: ListProps) => {
     )
   }
 
-  // For incremental loads (pagination, etc), show small progress 
-  if (isFetch) {
-    return (
-      <Box display="flex" justifyContent="center" alignItems="center" height={80}>
-        <CircularProgress size={24} />
-      </Box>
-    )
-  }
-
   // Show skeleton only on very first load when component mounts, not on later refetches or pagination
-  if (isFirstLoad && isLoading) {
+  if (isLoadingFinal) {
     return <SkeletonList />
   }
 

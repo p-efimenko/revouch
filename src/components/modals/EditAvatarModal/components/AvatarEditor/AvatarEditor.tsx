@@ -1,38 +1,41 @@
 import { useState } from 'react'
-import { Box, Slider, Typography } from '@mui/material'
+import { Box, Slider, Stack } from '@mui/material'
 import Cropper, { type Area, type CropperProps } from 'react-easy-crop'
 import { Icon } from '@/components/ui'
 
 type AvatarEditorProps = {
+  url: string
   height: number
   onCrop: (croppedArea: Area) => void
   onCancel: () => void
-  onZoomChange: () => void
-  url: string
+  onZoomChange: (zoom: number) => void
 }
 
 export const AvatarEditor = (props: AvatarEditorProps) => {
+
+  const { url, height, onCrop, onZoomChange } = props
+
   const [crop, setCrop] = useState({ x: 1, y: 1 })
-  const [zoom, setZoom] = useState(1)
+  const [zoom, setZoom] = useState(2)
 
   const onCropChange: CropperProps['onCropChange'] = cropLocation => {
     setCrop(cropLocation)
   }
 
   const onCropComplete: CropperProps['onCropComplete'] = (_, croppedAreaPixels) => {
-    props.onCrop(croppedAreaPixels)
+    onCrop(croppedAreaPixels)
   }
 
-  const onZoomChange = (zoom: number) => {
+  const onInternalZoomChange = (zoom: number) => {
     setZoom(zoom)
-    props.onZoomChange()
+    onZoomChange(zoom)
   }
 
   return (
     <>
-      <Box position="relative" height={props.height}>
+      <Box height={height} position="relative">
         <Cropper
-          image={props.url}
+          image={url}
           style={{
             cropAreaStyle: {
               border: 'none',
@@ -41,44 +44,37 @@ export const AvatarEditor = (props: AvatarEditorProps) => {
           crop={crop}
           zoom={zoom}
           aspect={1}
-          cropSize={{ width: 250, height: 250 }}
+          cropSize={{ width: 300, height: 300 }}
           cropShape="round"
           objectFit="cover"
           showGrid={false}
           onCropChange={onCropChange}
           onCropComplete={onCropComplete}
-          onZoomChange={onZoomChange}
+          onZoomChange={onInternalZoomChange}
         />
-        <Box
-          sx={{
-            position: 'absolute',
-            top: 24,
-            right: 24,
-            zIndex: 1,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: 24,
-            height: 24,
-            backgroundColor: 'text.disabled',
-            cursor: 'pointer',
-          }}
-          onClick={props.onCancel}
-        >
-          <Icon name="close" size={14} />
-        </Box>
       </Box>
 
-      <Box display="flex" flexDirection="column" alignItems="center" pt={4} pb={4}>
-        <Typography variant="body2" color="text.secondary">
-          Adjust visible avatar area
-        </Typography>
-        <Box display="flex" width="75%" alignItems="center" gap={3}>
-          <Icon name="picture-in-picture" />
-          <Slider value={zoom} min={1} max={3} step={0.1} onChange={(_, zoom) => onZoomChange(zoom as number)} />
-          <Icon name="image" />
-        </Box>
-      </Box>
+      <Stack
+        direction="row"
+        spacing={16}
+        alignItems="center"
+        p={24}
+        bgcolor="black.100"
+        color="black.600"
+      >
+        <Icon name="image" size={16} />
+
+        <Slider
+          value={zoom}
+          min={1}
+          max={3}
+          step={0.1}
+          onChange={(_, zoom) => onInternalZoomChange(zoom as number)}
+          sx={{ width: '100%' }}
+        />
+
+        <Icon name="image" size={16} />
+      </Stack>
     </>
   )
 }

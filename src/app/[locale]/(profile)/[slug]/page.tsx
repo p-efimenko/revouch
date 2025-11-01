@@ -34,19 +34,21 @@ export default async function Profile({ params }: { params: { slug: string } }) 
   }
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <Stack
-        position="relative"
-        maxWidth={{ xs: '100%', sm: '100%', md: 600 }}
-        alignItems="center" px={{ xs: 16, sm: 52, md: 0 }}
-      >
-        <Suspense fallback={<SkeletonHeader />}>
-          <Header isUser={isUser} slug={slug!} />
-        </Suspense>
+    <Stack justifyContent="center" alignItems="center" minHeight="100%" width="100%">
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <Stack
+          position="relative"
+          maxWidth={{ xs: '100%', sm: '100%', md: 600 }}
+          alignItems="center" px={{ xs: 16, sm: 52, md: 0 }}
+        >
+          <Suspense fallback={<SkeletonHeader />}>
+            <Header isUser={isUser} slug={slug!} />
+          </Suspense>
 
-        <Revouches />
-      </Stack>
-    </HydrationBoundary>
+          <Revouches />
+        </Stack>
+      </HydrationBoundary>
+    </Stack >
   )
 }
 

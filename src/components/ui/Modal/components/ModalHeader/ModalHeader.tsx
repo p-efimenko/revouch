@@ -45,7 +45,7 @@ const DefaultHeader = (props: DefaultHeaderProps) => {
   const { fontSize, fontWeight, title } = props
 
   return (
-    <Typography variant="h2" fontSize={fontSize} fontWeight={fontWeight}>
+    <Typography variant="h1" fontSize={fontSize} fontWeight={fontWeight}>
       {title}
     </Typography>
   )

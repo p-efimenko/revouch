@@ -35,7 +35,7 @@ export const UserHeader = (props: UserHeaderProps) => {
           </Stack>
         </Stack>
         {isUser && <MyUserSubHeader />}
-        {!isUser && <OtherUserSubHeader user={user} />}
+        {!isUser && <OtherUserSubHeader user={user!} />}
       </Stack>
     </Stack>
   )
@@ -116,7 +116,7 @@ export const OtherUserSubHeader = ({ user }: { user: UserDataResponseDto }) => {
 
   return (
     <>
-      <FollowButton userId={user?.id} />
+      <FollowButton user={user} />
 
       <Stack direction="row" spacing={8}>
         {chipStats.map(({ icon, label }, idx) => (

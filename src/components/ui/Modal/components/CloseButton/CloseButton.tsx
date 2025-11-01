@@ -1,31 +1,27 @@
 import { Icon } from '@/components/ui'
-import { IconButton } from '@mui/material'
+import { IconButton, type IconButtonProps } from '@mui/material'
 
 interface CloseButtonProps {
-  sx?: Record<string, any>
+  IconButtonProps?: IconButtonProps
   onClose?: (id?: string | number) => void
 }
 
 export const CloseButton = (props: CloseButtonProps) => {
-  const { onClose, sx } = props
+  const { onClose, IconButtonProps } = props
 
   return (
     <IconButton
       aria-label="close"
       onClick={() => onClose?.()}
-      size="small"
-      sx={theme => ({
+      sx={(theme) => ({
         position: 'absolute',
-        right: 14,
-        top: 14,
-        color: {
-          xs: theme.palette.grey[500],
-          sm: theme.palette.text.primary,
-        },
-        ...sx,
+        right: 26,
+        top: 26,
+        color: theme.palette.black[600],
       })}
+      {...IconButtonProps}
     >
-      <Icon size={24} name="close" sx={{ cursor: 'pointer' }} />
+      <Icon size={16} name="close" sx={{ cursor: 'pointer' }} />
     </IconButton>
   )
 }

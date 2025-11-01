@@ -22,5 +22,6 @@ export const MobileBackButton = (props: MobileBackButtonProps) => {
       </IconButton>
     )
   }
+
   return <Box height={32} />
 }

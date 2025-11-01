@@ -28,7 +28,7 @@ export const SmallUserHeader = (props: SmallUserHeaderProps) => {
       </Stack>
       {isUser && <Typography variant="h3">Revouches</Typography>}
       <Stack spacing={16} direction="row" alignItems="center">
-        {!isUser && <FollowButton userId={user!.id} />}
+        {!isUser && <FollowButton user={user!} />}
         <IconButton>
           <Icon name="sort" size={16} />
         </IconButton>

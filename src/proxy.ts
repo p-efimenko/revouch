@@ -10,16 +10,6 @@ const PUBLIC_PAGES = [
   '/reset_password',
   '/policy',
   '/terms',
-  '/profile',
-  // remove after auth is implemented
-  '/settings',
-  '/settings/bio',
-  '/settings/friends',
-  '/settings/interests',
-  '/settings/notifications',
-  '/settings/collections',
-  '/settings/activities',
-  '/settings/social-messengers',
 ]
 
 const intlMiddleware = createMiddleware(routing)
