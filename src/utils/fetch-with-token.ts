@@ -17,7 +17,7 @@ export async function fetchUserData(
       },
     })
 
-    console.log('response', response.json())
+    console.log('response', await response.json())
 
     if (!response.ok) {
       console.error('Failed to fetch user data:', response.statusText)
