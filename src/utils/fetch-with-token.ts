@@ -17,6 +17,7 @@ export async function fetchUserData(
       },
     })
 
+    console.log('accessToken', accessToken)
     console.log('response', await response.json())
 
     if (!response.ok) {
